@@ -15,16 +15,13 @@ class HousesController < ApplicationController
 
   # POST /houses
   def create
-    if current_home_owner
-      @house = current_home_owner.houses.new(house_params)
-
-      if @house.save
-        render json: @house, status: :created, location: @house
-      else
-        render json: @house.errors, status: :unprocessable_entity
-      end
+    @house = current_home_owner.houses.new(house_params)
+    
+    if @house.save
+      @house.image.attach(params[:house][:image]) if params[:house][:image].present?
+      render json: @house, status: :created, location: @house
     else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+      render json: @house.errors, status: :unprocessable_entity
     end
   end
 
@@ -49,7 +46,6 @@ class HousesController < ApplicationController
 
   private
 
-  # Ensure only authenticated home owners can access create, update, and destroy actions
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
     Rails.logger.info "Token: #{token}"
@@ -75,6 +71,23 @@ class HousesController < ApplicationController
   end
 
   def house_params
-    params.require(:house).permit(:title, :description, :price, :image, :address, :bathrooms, :bedrooms, :category, :duration, :location, :square)
+    params.require(:house).permit(
+      :title,
+      :description,
+      :price,
+      :image,
+      :address,
+      :bathrooms,
+      :bedrooms,
+      :location,
+      :squareFeet,
+      :furnishingStatus,
+      :parkingAvailability,
+      :vehicles,
+      :units,
+      :deposit,
+      :category,
+      :duration
+    )
   end
 end
