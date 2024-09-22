@@ -38,6 +38,6 @@ test:
 production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
-  database: homify_api_production
-  username: homify_api
+  database: homify
+  username: homify_user
   password: <%= ENV["HOMIFY_API_DATABASE_PASSWORD"] %>
