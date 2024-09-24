@@ -58,6 +58,6 @@ class HomeOwnersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def home_owner_params
-    params.permit(:name, :email, :password, :password_confirmation)
+    params.require(home_owner).permit(:name, :email, :password, :password_confirmation, :bio, :image)
   end
 end
