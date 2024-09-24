@@ -57,8 +57,8 @@ class HomeOwnersController < ApplicationController
     @home_owner = HomeOwner.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def home_owner_params
-    params.require(home_owner).permit(:name, :email, :password, :password_confirmation, :bio, :image)
+    params.require(:home_owner).permit(:username, :email, :password, :password_confirmation, :bio, :image)
   end
+  
 end
