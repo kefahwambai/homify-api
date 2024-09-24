@@ -8,11 +8,23 @@ class AuthenticationTokenService
     JWT.encode payload, HMAC_SECRET, ALGORITHM_TYPE
   end
 
+  # def self.decode(token)
+  #   JWT.decode token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }
+  # rescue JWT::ExpiredSignature, JWT::DecodeError
+  #   nil
+  # end
   def self.decode(token)
-    JWT.decode token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }
-  rescue JWT::ExpiredSignature, JWT::DecodeError
-    nil
+    begin
+      JWT.decode token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }
+    rescue JWT::ExpiredSignature
+      Rails.logger.info "Token has expired"
+      nil
+    rescue JWT::DecodeError => e
+      Rails.logger.info "JWT Decode Error: #{e.message}"
+      nil
+    end
   end
+  
 
   def self.valid_payload(payload)
     !expired(payload)
