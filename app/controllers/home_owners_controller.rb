@@ -44,8 +44,9 @@ class HomeOwnersController < ApplicationController
   def authenticate_token
     token = request.headers['Authorization']
     return render json: { error: 'Token not provided' }, status: :unauthorized unless token
-
+    token = token.split(' ').last
     home_owner_id = AuthenticationTokenService.decode(token)
+    Rails.logger.info "Decoded token: #{home_owner_id}"
     @home_owner = HomeOwner.find_by(id: home_owner_id)
 
     return render json: { error: 'Invalid token' }, status: :unauthorized unless @home_owner
