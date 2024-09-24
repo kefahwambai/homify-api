@@ -1,4 +1,5 @@
 class HomeOwnersController < ApplicationController
+  before_action :authenticate_token, only: [:update]
   before_action :set_home_owner, only: %i[ show edit update destroy ]
 
   # GET /home_owners or /home_owners.json
@@ -39,6 +40,16 @@ class HomeOwnersController < ApplicationController
   end
 
   private
+
+  def authenticate_token
+    token = request.headers['Authorization']
+    return render json: { error: 'Token not provided' }, status: :unauthorized unless token
+
+    home_owner_id = AuthenticationTokenService.decode(token)
+    @home_owner = HomeOwner.find_by(id: home_owner_id)
+
+    return render json: { error: 'Invalid token' }, status: :unauthorized unless @home_owner
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_home_owner
