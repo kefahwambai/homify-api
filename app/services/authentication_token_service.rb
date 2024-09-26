@@ -16,7 +16,7 @@ class AuthenticationTokenService
   def self.decode(token)
     begin
       decoded_token = JWT.decode(token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }).first
-      decoded_token['user_id']  # Extract the user_id from the decoded token
+      decoded_token  # Return the entire payload as a hash
     rescue JWT::ExpiredSignature
       Rails.logger.info "Token has expired"
       nil
@@ -25,6 +25,7 @@ class AuthenticationTokenService
       nil
     end
   end
+  
   
   
 

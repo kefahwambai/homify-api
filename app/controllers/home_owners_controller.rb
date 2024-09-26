@@ -58,7 +58,7 @@ class HomeOwnersController < ApplicationController
   end
 
   def home_owner_params
-    params.require(:home_owner).permit(:username, :email, :password, :password_confirmation, :bio, :image)
+    params.require(:home_owner).permit(:name, :email, :password, :password_confirmation, :bio, :image)
   end
   
 end
