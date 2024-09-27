@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_24_134357) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_27_065120) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_24_134357) do
     t.string "parkingAvailability"
     t.integer "deposit"
     t.integer "vehicles"
+    t.string "video"
+    t.string "video_url"
+    t.string "pdf"
+    t.string "amenities"
+    t.string "currency"
     t.index ["home_owner_id"], name: "index_houses_on_home_owner_id"
   end
 

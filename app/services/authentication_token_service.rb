@@ -5,35 +5,30 @@ class AuthenticationTokenService
   def self.encode(user_id)
     exp = 30.minutes.from_now.to_i
     payload = { user_id: user_id, exp: exp }
-    JWT.encode payload, HMAC_SECRET, ALGORITHM_TYPE
+    JWT.encode(payload, HMAC_SECRET, ALGORITHM_TYPE)
   end
 
-  # def self.decode(token)
-  #   JWT.decode token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }
-  # rescue JWT::ExpiredSignature, JWT::DecodeError
-  #   nil
-  # end
   def self.decode(token)
     begin
       decoded_token = JWT.decode(token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }).first
+      Rails.logger.info "Decoded token: #{decoded_token.inspect}"
       decoded_token  # Return the entire payload as a hash
     rescue JWT::ExpiredSignature
       Rails.logger.info "Token has expired"
       nil
     rescue JWT::DecodeError => e
-      Rails.logger.info "JWT Decode Error: #{e.message}"
+      Rails.logger.error "JWT Decode Error: #{e.message}"
       nil
     end
   end
-  
-  
-  
 
   def self.valid_payload(payload)
     !expired(payload)
   end
 
   def self.expired(payload)
+    return true unless payload['exp']  
+
     Time.at(payload['exp']) < Time.now
   end
 end

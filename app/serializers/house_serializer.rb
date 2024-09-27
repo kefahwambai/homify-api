@@ -2,7 +2,7 @@ class HouseSerializer < ActiveModel::Serializer
   attributes :id, :title, :description, :price, :image, :address, 
              :bathrooms, :bedrooms, :category, :duration, :deposit, 
              :vehicles, :location, :squareFeet, :furnishingStatus, 
-             :parkingAvailability
+             :parkingAvailability, :video, :video_url, :pdf
 
   has_one :home_owner
 
@@ -10,7 +10,11 @@ class HouseSerializer < ActiveModel::Serializer
     Rails.application.routes.url_helpers.rails_blob_url(object.image, only_path: true) if object.image.attached?
   end
 
-  def formatted_price
-    sprintf('%.2f', object.price)
+  def video
+    Rails.application.routes.url_helpers.rails_blob_url(object.video, only_path: true) if object.video.attached?
+  end
+
+  def pdf
+    Rails.application.routes.url_helpers.rails_blob_url(object.pdf, only_path: true) if object.pdf.attached?
   end
 end
