@@ -12,7 +12,7 @@ class AuthenticationTokenService
     begin
       decoded_token = JWT.decode(token, HMAC_SECRET, true, { algorithm: ALGORITHM_TYPE }).first
       Rails.logger.info "Decoded token: #{decoded_token.inspect}"
-      decoded_token  # Return the entire payload as a hash
+      decoded_token
     rescue JWT::ExpiredSignature
       Rails.logger.info "Token has expired"
       nil
@@ -27,8 +27,9 @@ class AuthenticationTokenService
   end
 
   def self.expired(payload)
-    return true unless payload['exp']  
+    exp = payload['exp'] || payload[:exp]
+    return true unless exp
 
-    Time.at(payload['exp']) < Time.now
+    Time.at(exp) < Time.now
   end
 end
