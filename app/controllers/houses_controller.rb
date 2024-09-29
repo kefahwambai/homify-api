@@ -19,7 +19,7 @@ class HousesController < ApplicationController
     
     if params[:house][:image]
       params[:house][:image].each do |image|
-        @house.images.attach(image) 
+        @house.image.attach(image) 
       end
     end
 
