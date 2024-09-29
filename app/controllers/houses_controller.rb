@@ -15,26 +15,26 @@ class HousesController < ApplicationController
 
   # POST /houses
   def create
-    @house = current_home_owner.houses.new(house_params)
-  
+    @house = House.new(house_params)
+    
+    if params[:house][:image]
+      params[:house][:image].each do |image|
+        @house.images.attach(image) 
+      end
+    end
+
+    if params[:house][:video]
+      @house.video = params[:house][:video] 
+    end
+
+    if params[:house][:pdf]
+      @house.pdf = params[:house][:pdf]
+    end
+
     if @house.save
-      @house.image.attach(params[:house][:image]) if params[:house][:image].present?  # ActiveStorage for images
-  
-      if params[:house][:video].present?
-        @house.video = params[:house][:video]  
-      end
-  
-      if params[:house][:pdf].present?
-        @house.pdf = params[:house][:pdf]   
-      end
-  
-      if @house.save
-        render json: @house, status: :created, location: @house
-      else
-        render json: @house.errors, status: :unprocessable_entity
-      end
+      render json: { message: "House created successfully" }, status: :created
     else
-      render json: @house.errors, status: :unprocessable_entity
+      render json: { errors: @house.errors.full_messages }, status: :unprocessable_entity
     end
   end
   
