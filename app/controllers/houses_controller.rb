@@ -48,15 +48,15 @@ class HousesController < ApplicationController
     end
   end
 
-  # DELETE /houses/1
-  def destroy
-    if @house.home_owner == current_home_owner
-      @house.destroy
-      render json: { message: 'House was successfully destroyed.' }, status: :ok
-    else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
-    end
-  end
+  # # DELETE /houses/1
+  # def destroy
+  #   if @house.home_owner == current_home_owner
+  #     @house.destroy
+  #     render json: { message: 'House was successfully destroyed.' }, status: :ok
+  #   else
+  #     render json: { error: 'Unauthorized' }, status: :unauthorized
+  #   end
+  # end
 
   # DELETE /houses/1
   def destroy

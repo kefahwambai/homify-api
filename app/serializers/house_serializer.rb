@@ -11,11 +11,11 @@ class HouseSerializer < ActiveModel::Serializer
     Rails.application.routes.url_helpers.rails_blob_url(object.image, only_path: true) if object.image.attached?
   end
 
-  def video_url
+  def video
     object.video.url if object.video.present?   
   end
 
-  def pdf_url
+  def pdf
     object.pdf.url if object.pdf.present?      
   end
 end
