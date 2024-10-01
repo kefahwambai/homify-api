@@ -49,41 +49,41 @@ class HousesController < ApplicationController
 
   private
 
-  # def authenticate_home_owner!
-  #   token = request.headers['Authorization']&.split(' ')&.last
-  #   Rails.logger.info("Received token: #{token}")
-
-  #   if token.nil?
-  #     Rails.logger.warn("Token not provided")
-  #     render json: { error: 'Unauthorized' }, status: :unauthorized and return
-  #   end
-
-  #   decoded_token = AuthenticationTokenService.decode(token)
-  #   return render json: { error: 'Unauthorized' }, status: :unauthorized unless decoded_token
-
-  #   Rails.logger.info("Decoded token: #{decoded_token.inspect}")
-  #   @current_home_owner = HomeOwner.find_by(id: decoded_token['user_id'])
-
-  #   if @current_home_owner.nil?
-  #     Rails.logger.warn("HomeOwner not found")
-  #     render json: { error: 'Unauthorized' }, status: :unauthorized and return
-  #   end
-  # end
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
-    Rails.logger.info "Token: #{token}"
-    decoded_token = AuthenticationTokenService.decode(token)
-    Rails.logger.info "Decoded token: #{decoded_token.inspect}"
-    payload = decoded_token&.first
+    Rails.logger.info("Received token: #{token}")
 
-    if payload && AuthenticationTokenService.valid_payload(payload)
-      @current_home_owner = HomeOwner.find_by(id: payload['user_id'])
-      Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
-      render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_home_owner
-    else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+    if token.nil?
+      Rails.logger.warn("Token not provided")
+      render json: { error: 'Unauthorized' }, status: :unauthorized and return
+    end
+
+    decoded_token = AuthenticationTokenService.decode(token)
+    return render json: { error: 'Unauthorized' }, status: :unauthorized unless decoded_token
+
+    Rails.logger.info("Decoded token: #{decoded_token.inspect}")
+    @current_home_owner = HomeOwner.find_by(id: decoded_token['user_id'])
+
+    if @current_home_owner.nil?
+      Rails.logger.warn("HomeOwner not found")
+      render json: { error: 'Unauthorized' }, status: :unauthorized and return
     end
   end
+  # def authenticate_home_owner!
+  #   token = request.headers['Authorization']&.split(' ')&.last
+  #   Rails.logger.info "Token: #{token}"
+  #   decoded_token = AuthenticationTokenService.decode(token)
+  #   Rails.logger.info "Decoded token: #{decoded_token.inspect}"
+  #   payload = decoded_token&.first
+
+  #   if payload && AuthenticationTokenService.valid_payload(payload)
+  #     @current_home_owner = HomeOwner.find_by(id: payload['user_id'])
+  #     Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
+  #     render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_home_owner
+  #   else
+  #     render json: { error: 'Unauthorized' }, status: :unauthorized
+  #   end
+  # end
 
   def current_home_owner
     @current_home_owner
