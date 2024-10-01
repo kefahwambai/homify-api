@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_27_165338) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_01_071321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,7 +65,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_27_165338) do
     t.string "title"
     t.text "description"
     t.decimal "price"
-    t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "address"
@@ -79,9 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_27_165338) do
     t.string "parkingAvailability"
     t.integer "deposit"
     t.integer "vehicles"
-    t.string "video"
     t.string "video_url"
-    t.string "pdf"
     t.text "amenities"
     t.string "currency"
     t.index ["home_owner_id"], name: "index_houses_on_home_owner_id"

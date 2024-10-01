@@ -15,7 +15,7 @@ class HousesController < ApplicationController
 
   # POST /houses
   def create
-    @house = House.new(house_params)
+    @house = current_home_owner.houses.new(house_params)
 
     # Attach images, video, and PDF if they exist
     attach_files(@house)
@@ -49,24 +49,39 @@ class HousesController < ApplicationController
 
   private
 
+  # def authenticate_home_owner!
+  #   token = request.headers['Authorization']&.split(' ')&.last
+  #   Rails.logger.info("Received token: #{token}")
+
+  #   if token.nil?
+  #     Rails.logger.warn("Token not provided")
+  #     render json: { error: 'Unauthorized' }, status: :unauthorized and return
+  #   end
+
+  #   decoded_token = AuthenticationTokenService.decode(token)
+  #   return render json: { error: 'Unauthorized' }, status: :unauthorized unless decoded_token
+
+  #   Rails.logger.info("Decoded token: #{decoded_token.inspect}")
+  #   @current_home_owner = HomeOwner.find_by(id: decoded_token['user_id'])
+
+  #   if @current_home_owner.nil?
+  #     Rails.logger.warn("HomeOwner not found")
+  #     render json: { error: 'Unauthorized' }, status: :unauthorized and return
+  #   end
+  # end
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
-    Rails.logger.info("Received token: #{token}")
-
-    if token.nil?
-      Rails.logger.warn("Token not provided")
-      render json: { error: 'Unauthorized' }, status: :unauthorized and return
-    end
-
+    Rails.logger.info "Token: #{token}"
     decoded_token = AuthenticationTokenService.decode(token)
-    return render json: { error: 'Unauthorized' }, status: :unauthorized unless decoded_token
+    Rails.logger.info "Decoded token: #{decoded_token.inspect}"
+    payload = decoded_token&.first
 
-    Rails.logger.info("Decoded token: #{decoded_token.inspect}")
-    @current_home_owner = HomeOwner.find_by(id: decoded_token['user_id'])
-
-    if @current_home_owner.nil?
-      Rails.logger.warn("HomeOwner not found")
-      render json: { error: 'Unauthorized' }, status: :unauthorized and return
+    if payload && AuthenticationTokenService.valid_payload(payload)
+      @current_home_owner = HomeOwner.find_by(id: payload['user_id'])
+      Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
+      render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_home_owner
+    else
+      render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
 
@@ -82,16 +97,16 @@ class HousesController < ApplicationController
     params.require(:house).permit(
       :title, :description, :price, :video, :video_url, :pdf, :address,
       :bathrooms, :bedrooms, :location, :squareFeet, :furnishingStatus,
-      :parkingAvailability, :vehicles, :deposit, :currency, :category, :duration,
-      amenities: [], image: []
+      :parkingAvailability, :vehicles, :deposit, :currency, :category, :duration, :image,
+      amenities: []
     )
   end
 
   def attach_files(house)
     begin
       # Attach multiple images if provided
-      if params[:house][:image].present?
-        params[:house][:image].each do |image|
+      if params[:house][:images].present?
+        params[:house][:images].each do |image|
           house.images.attach(image)
         end
       end

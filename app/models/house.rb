@@ -1,6 +1,6 @@
 class House < ApplicationRecord
   belongs_to :home_owner
-  has_one_attached :image
+  has_one_attached :images
   has_one_attached :video 
   has_one_attached :pdf
   # mount_uploader :video, VideoUploader
