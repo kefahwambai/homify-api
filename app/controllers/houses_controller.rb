@@ -18,10 +18,12 @@ class HousesController < ApplicationController
     @house = current_home_owner.houses.new(house_params)
   
     if @house.save
-      attach_files(@house)
-      render json: { message: "House created successfully" }, status: :created
+      @house.images.attach(params[:house][:images]) if params[:house][:images].present?
+      @house.videos.attach(params[:house][:videos]) if params[:house][:videos].present?
+      @house.pdfs.attach(params[:house][:pdfs]) if params[:house][:pdfs].present?
+      render json: @house, status: :created, location: @house
     else
-      render json: { errors: @house.errors.full_messages }, status: :unprocessable_entity
+      render json: @house.errors, status: :unprocessable_entity
     end
   end
 
@@ -100,30 +102,30 @@ class HousesController < ApplicationController
     )
   end
 
-  def attach_files(house)
-    begin
-      # Attach multiple images if provided
-      if params[:house][:images].present?
-        params[:house][:images].each do |image|
-          house.images.attach(image)
-        end
-      end
-      if params[:house][:videos].present?
-        params[:house][:videos].each do |video|
-          house.videos.attach(video)
-        end
-      end
+  # def attach_files(house)
+  #   begin
+  #     # Attach multiple images if provided
+  #     if params[:house][:images].present?
+  #       params[:house][:images].each do |image|
+  #         house.images.attach(image)
+  #       end
+  #     end
+  #     if params[:house][:videos].present?
+  #       params[:house][:videos].each do |video|
+  #         house.videos.attach(video)
+  #       end
+  #     end
 
-      # Attach multiple PDFs if provided
-      if params[:house][:pdfs].present?
-        params[:house][:pdfs].each do |pdf|
-          house.pdfs.attach(pdf)
-        end
-      end
-    rescue => e
-      Rails.logger.error("File attachment failed: #{e.message}")
-    end
-  end
+  #     # Attach multiple PDFs if provided
+  #     if params[:house][:pdfs].present?
+  #       params[:house][:pdfs].each do |pdf|
+  #         house.pdfs.attach(pdf)
+  #       end
+  #     end
+  #   rescue => e
+  #     Rails.logger.error("File attachment failed: #{e.message}")
+  #   end
+  # end
 
   def authorize_home_owner!(house)
     house.home_owner == current_home_owner
