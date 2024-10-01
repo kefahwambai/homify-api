@@ -1,8 +1,8 @@
 class HouseSerializer < ActiveModel::Serializer
-  attributes :id, :title, :description, :price, :image, :address, 
+  attributes :id, :title, :description, :price, :video_url, :address, 
              :bathrooms, :bedrooms, :category, :duration, :deposit, 
              :vehicles, :location, :squareFeet, :furnishingStatus, 
-             :parkingAvailability, :video, :video_url, :pdf, :amenities
+             :parkingAvailability, :video, :pdf, :amenities,  image: []
 
   has_one :home_owner
   

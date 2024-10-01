@@ -23,13 +23,9 @@ class HousesController < ApplicationController
       end
     end
 
-    if params[:house][:video].present?
-      @house.video.attach(params[:house][:video]) 
-    end
+    @house.video = params[:house][:video] if params[:house][:video].present?
 
-    if params[:house][:pdf].present?
-      @house.pdf.attach(params[:house][:pdf]) 
-    end
+    @house.pdf = params[:house][:pdf] if params[:house][:pdf].present?
 
     if @house.save
       render json: { message: "House created successfully" }, status: :created
