@@ -17,18 +17,18 @@ class HousesController < ApplicationController
   def create
     @house = House.new(house_params)
     
-    if params[:house][:image]
+    if params[:house][:image].present?
       params[:house][:image].each do |image|
         @house.image.attach(image) 
       end
     end
 
-    if params[:house][:video]
-      @house.video = params[:house][:video] 
+    if params[:house][:video].present?
+      @house.video.attach(params[:house][:video]) 
     end
 
-    if params[:house][:pdf]
-      @house.pdf = params[:house][:pdf]
+    if params[:house][:pdf].present?
+      @house.pdf.attach(params[:house][:pdf]) 
     end
 
     if @house.save
@@ -121,7 +121,6 @@ class HousesController < ApplicationController
       :title,
       :description,
       :price,
-      :image,
       :video,
       :video_url,
       :pdf,
@@ -138,6 +137,7 @@ class HousesController < ApplicationController
       :category,
       :duration,
       amenities: [],
+      image: []
     )
   end
 
