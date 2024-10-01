@@ -17,9 +17,24 @@ class HousesController < ApplicationController
   def create
     @house = current_home_owner.houses.new(house_params)
 
-    # Attach images, video, and PDF if they exist
-    attach_files(@house)
-
+    if params[:house][:images].present?
+      params[:house][:images].each do |image|
+        @house.images.attach(image)
+      end
+    end
+    
+    if params[:house][:videos].present?
+      params[:house][:videos].each do |video|
+        @house.videos.attach(video)
+      end
+    end
+  
+    if params[:house][:pdfs].present?
+      params[:house][:pdfs].each do |pdf|
+        @house.pdfs.attach(pdf)
+      end
+    end
+  
     if @house.save
       render json: { message: "House created successfully" }, status: :created
     else
@@ -95,9 +110,9 @@ class HousesController < ApplicationController
 
   def house_params
     params.require(:house).permit(
-      :title, :description, :price, :video, :video_url, :pdf, :address,
+      :title, :description, :price, :videos, :video_url, :pdfs, :address,
       :bathrooms, :bedrooms, :location, :squareFeet, :furnishingStatus,
-      :parkingAvailability, :vehicles, :deposit, :currency, :category, :duration, :image,
+      :parkingAvailability, :vehicles, :deposit, :currency, :category, :duration, :images,
       amenities: []
     )
   end

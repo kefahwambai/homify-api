@@ -1,8 +1,8 @@
 class House < ApplicationRecord
   belongs_to :home_owner
   has_one_attached :images
-  has_one_attached :video 
-  has_one_attached :pdf
+  has_one_attached :videos
+  has_one_attached :pdfs
   # mount_uploader :video, VideoUploader
   # mount_uploader :pdf, PdfUploader
   serialize :amenities, Array
