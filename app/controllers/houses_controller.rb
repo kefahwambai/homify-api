@@ -16,26 +16,9 @@ class HousesController < ApplicationController
   # POST /houses
   def create
     @house = current_home_owner.houses.new(house_params)
-
-    if params[:house][:images].present?
-      params[:house][:images].each do |image|
-        @house.images.attach(image)
-      end
-    end
-    
-    if params[:house][:videos].present?
-      params[:house][:videos].each do |video|
-        @house.videos.attach(video)
-      end
-    end
-  
-    if params[:house][:pdfs].present?
-      params[:house][:pdfs].each do |pdf|
-        @house.pdfs.attach(pdf)
-      end
-    end
   
     if @house.save
+      attach_files(@house)
       render json: { message: "House created successfully" }, status: :created
     else
       render json: { errors: @house.errors.full_messages }, status: :unprocessable_entity
@@ -125,10 +108,18 @@ class HousesController < ApplicationController
           house.images.attach(image)
         end
       end
+      if params[:house][:videos].present?
+        params[:house][:videos].each do |video|
+          house.videos.attach(video)
+        end
+      end
 
-      # Attach video and PDF if they exist
-      house.video.attach(params[:house][:video]) if params[:house][:video].present?
-      house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
+      # Attach multiple PDFs if provided
+      if params[:house][:pdfs].present?
+        params[:house][:pdfs].each do |pdf|
+          house.pdfs.attach(pdf)
+        end
+      end
     rescue => e
       Rails.logger.error("File attachment failed: #{e.message}")
     end
