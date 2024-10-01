@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     
     if user&.authenticate(params[:password])
       token = AuthenticationTokenService.encode(user.id)
-      render json: { user: serialize_user(user), token: token }
+      render json: { user: { id: user.id, email: user.email, name: user.name }, token: token }, status: :ok
     else
       render json: { message: 'Invalid email or password' }, status: :unauthorized
     end

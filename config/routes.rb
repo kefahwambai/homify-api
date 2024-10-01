@@ -4,8 +4,7 @@ Rails.application.routes.draw do
   resources :home_buyers, only: [:index, :show, :create, :update, :destroy]
   resources :purchases, only: [:index, :show, :create, :destroy]
 
-  # put    '/home_owners/:id(.:format)', to: 'home_owners#update'
-  
+
   post '/signup/owner', to: 'home_owners#create'
   post '/signup/buyer', to: 'home_buyers#create'
   
