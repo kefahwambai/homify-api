@@ -132,7 +132,7 @@ class HousesController < ApplicationController
       :currency,      
       :category,
       :duration,
-      :image,
+      # :image,
       amenities: []
     )
   end
