@@ -79,7 +79,7 @@ class HousesController < ApplicationController
     params.require(:house).permit(
       :title, :description, :price, :address, :bathrooms, :bedrooms,
       :category, :duration, :location, :squareFeet, :furnishingStatus, :currency,
-      :parkingAvailability, :deposit, :vehicles, :video_url, :amenities,
+      :parkingAvailability, :deposit, :vehicles, :video_url, amenities: [],
       image: [], video: [], pdf: []
     )
   end

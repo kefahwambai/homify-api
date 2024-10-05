@@ -17,7 +17,7 @@ class HomeOwnersController < ApplicationController
     @home_owner = HomeOwner.new(home_owner_params)
     if @home_owner.save
       token = AuthenticationTokenService.encode(@home_owner.id)
-      render jsonac: { token: token }, status: :created
+      render json: { token: token }, status: :created
     else
       render json: @home_owner.errors, status: :unprocessable_entity
     end
