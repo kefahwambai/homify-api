@@ -1,8 +1,8 @@
 databases:
   - name: postgres
     ipAllowList: []
-    databaseName: homify
-    user: homify_user
+    databaseName:homify_41ny
+    user: homify_41ny_user
 
 services:
   - type: web
