@@ -1,11 +1,7 @@
 class ImageUploader < CarrierWave::Uploader::Base
-  # Specify the storage location, e.g., file storage or cloud storage
-  storage :file
-  def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
-  end
+  include Cloudinary::CarrierWave
 
-  def extension_whitelist
-    %w(jpg jpeg gif png)
+  version :thumbnail do
+    process resize_to_fit: [100, 100]
   end
 end

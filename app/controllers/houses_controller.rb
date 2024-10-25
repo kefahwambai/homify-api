@@ -10,17 +10,25 @@ class HousesController < ApplicationController
 
   # GET /houses/1
   def show
-    render json: @house, status: :ok
+    @house = House.find_by(id: params[:id])
+    if @house
+      house_data = @house.as_json
+      house_data[:image_url] = @house.image.url if @house.image.present?
+      render json: house_data, status: :ok
+    else
+      render json: { error: 'House not found or unauthorized.' }, status: :not_found
+    end
   end
+
 
   # POST /houses
   def create
     @house = current_home_owner.houses.new(house_params)
 
     if @house.save
-      @house.image.attach(params[:house][:image]) if params[:house][:image].present?
-      @house.video.attach(params[:house][:video]) if params[:house][:video].present?
-      @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
+      # @house.image.attach(params[:house][:image]) if params[:house][:image].present?
+      # @house.video.attach(params[:house][:video]) if params[:house][:video].present?
+      # @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
       render json: @house, status: :created, location: @house
     else
       render json: @house.errors, status: :unprocessable_entity
@@ -50,7 +58,6 @@ class HousesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
     Rails.logger.info "Token: #{token}"
