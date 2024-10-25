@@ -42,6 +42,7 @@ gem 'active_model_serializers'
 gem 'sprockets-rails', group: :assets
 gem 'dotenv-rails'
 gem 'cloudinary'
+gem 'activestorage-cloudinary-service'
 # gem 'ruby-vips', '~> 2.1', '>= 2.1.4'
 
 

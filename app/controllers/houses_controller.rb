@@ -26,9 +26,9 @@ class HousesController < ApplicationController
     @house = current_home_owner.houses.new(house_params)
 
     if @house.save
-      # @house.image.attach(params[:house][:image]) if params[:house][:image].present?
-      # @house.video.attach(params[:house][:video]) if params[:house][:video].present?
-      # @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
+      @house.image.attach(params[:house][:image]) if params[:house][:image].present?
+      @house.video.attach(params[:house][:video]) if params[:house][:video].present?
+      @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
       render json: @house, status: :created, location: @house
     else
       render json: @house.errors, status: :unprocessable_entity
