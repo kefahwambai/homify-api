@@ -85,9 +85,9 @@ class HousesController < ApplicationController
 
   def house_with_attached_urls(house)
     house.as_json.merge(
-      image_url: house.image.attached? ? url_for(house.image) : nil,
-      video_url: house.video.attached? ? url_for(house.video) : nil,
-      pdf_url: house.pdf.attached? ? url_for(house.pdf) : nil
+      image_urls: house.image.attached? ? house.image.map { |img| url_for(img) } : [],
+      video_urls: house.video.attached? ? house.video.map { |vid| url_for(vid) } : [],
+      pdf_urls: house.pdf.attached? ? house.pdf.map { |pdf| url_for(pdf) } : []
     )
   end
 end
