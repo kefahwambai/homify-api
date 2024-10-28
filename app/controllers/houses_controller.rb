@@ -13,16 +13,13 @@ class HousesController < ApplicationController
     render json: @house, status: :ok
   end
 
-
   # POST /houses
   def create
     @house = current_home_owner.houses.new(house_params)
 
     if @house.save
-      @house.image.attach(params[:house][:image]) if params[:house][:image].present?
-      @house.video.attach(params[:house][:video]) if params[:house][:video].present?
-      @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
-      render json: @house, status: :created, location: @house
+      attach_files
+      render json: house_with_attached_urls(@house), status: :created, location: @house
     else
       render json: @house.errors, status: :unprocessable_entity
     end
@@ -30,10 +27,9 @@ class HousesController < ApplicationController
 
   # PATCH/PUT /houses/1
   def update
-    # attach_files
-
     if @house.update(house_params)
-      render json: @house, status: :ok
+      attach_files
+      render json: house_with_attached_urls(@house), status: :ok
     else
       render json: @house.errors, status: :unprocessable_entity
     end
@@ -53,14 +49,11 @@ class HousesController < ApplicationController
 
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
-    # Rails.logger.info "Token: #{token}"
     decoded_token = AuthenticationTokenService.decode(token)
-    # Rails.logger.info "Decoded token: #{decoded_token.inspect}"
     payload = decoded_token&.first
 
     if payload && AuthenticationTokenService.valid_payload(payload)
       @current_home_owner = HomeOwner.find_by(id: payload['user_id'])
-      # Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
       render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_home_owner
     else
       render json: { error: 'Unauthorized' }, status: :unauthorized
@@ -84,18 +77,17 @@ class HousesController < ApplicationController
     )
   end
 
-  # Handle file attachments for images, videos, and PDFs
-  # def attach_files
-  #   if params[:house][:image].present?
-  #     @house.image.attach(params[:house][:image])
-  #   end
+  def attach_files
+    @house.image.attach(params[:house][:image]) if params[:house][:image].present?
+    @house.video.attach(params[:house][:video]) if params[:house][:video].present?
+    @house.pdf.attach(params[:house][:pdf]) if params[:house][:pdf].present?
+  end
 
-  #   if params[:house][:video].present?
-  #     @house.video.attach(params[:house][:video])
-  #   end
-
-  #   if params[:house][:pdf].present?
-  #     @house.pdf.attach(params[:house][:pdf])
-  #   end
-  # end
+  def house_with_attached_urls(house)
+    house.as_json.merge(
+      image_url: house.image.attached? ? url_for(house.image) : nil,
+      video_url: house.video.attached? ? url_for(house.video) : nil,
+      pdf_url: house.pdf.attached? ? url_for(house.pdf) : nil
+    )
+  end
 end
