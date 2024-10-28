@@ -1,8 +1,8 @@
 class House < ApplicationRecord
   belongs_to :home_owner
-  has_many_attached :images
-  has_many_attached :videos
-  has_many_attached :pdfs
+  has_many_attached :image
+  has_many_attached :video
+  has_many_attached :pdf
   
   # serialize :amenities, Array
   validates :title, :description, :price, presence: true
