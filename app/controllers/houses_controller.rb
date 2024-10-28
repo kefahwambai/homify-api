@@ -10,14 +10,7 @@ class HousesController < ApplicationController
 
   # GET /houses/1
   def show
-    @house = House.find_by(id: params[:id])
-    if @house
-      house_data = @house.as_json
-      house_data[:image_url] = @house.image.url if @house.image.present?
-      render json: house_data, status: :ok
-    else
-      render json: { error: 'House not found or unauthorized.' }, status: :not_found
-    end
+    render json: @house, status: :ok
   end
 
 
@@ -60,14 +53,14 @@ class HousesController < ApplicationController
 
   def authenticate_home_owner!
     token = request.headers['Authorization']&.split(' ')&.last
-    Rails.logger.info "Token: #{token}"
+    # Rails.logger.info "Token: #{token}"
     decoded_token = AuthenticationTokenService.decode(token)
-    Rails.logger.info "Decoded token: #{decoded_token.inspect}"
+    # Rails.logger.info "Decoded token: #{decoded_token.inspect}"
     payload = decoded_token&.first
 
     if payload && AuthenticationTokenService.valid_payload(payload)
       @current_home_owner = HomeOwner.find_by(id: payload['user_id'])
-      Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
+      # Rails.logger.info "Current Home Owner: #{@current_home_owner.inspect}"
       render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_home_owner
     else
       render json: { error: 'Unauthorized' }, status: :unauthorized
