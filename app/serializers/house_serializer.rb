@@ -8,7 +8,7 @@ class HouseSerializer < ActiveModel::Serializer
 
   def image_urls
     if object.image.attached?
-      object.image.map { |image| Rails.application.routes.url_helpers.rails_blob_url(image, only_path: true) }
+      object.image.map { |image| Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false) }
     else
       []
     end
@@ -16,7 +16,7 @@ class HouseSerializer < ActiveModel::Serializer
 
   def video_urls
     if object.video.attached?
-      object.video.map { |video| Rails.application.routes.url_helpers.rails_blob_url(video, only_path: true) }
+      object.video.map { |video| Rails.application.routes.url_helpers.rails_blob_url(video, only_path: false) }
     else
       []
     end
@@ -24,7 +24,7 @@ class HouseSerializer < ActiveModel::Serializer
 
   def pdf_urls
     if object.pdf.attached?
-      object.pdf.map { |pdf| Rails.application.routes.url_helpers.rails_blob_url(pdf, only_path: true) }
+      object.pdf.map { |pdf| Rails.application.routes.url_helpers.rails_blob_url(pdf, only_path: false) }
     else
       []
     end

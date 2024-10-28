@@ -5,7 +5,8 @@ Rails.application.configure do
 
   # Code is not reloaded between requests.
   config.cache_classes = true
-
+  # config.action_controller.default_url_options = { host: 'https://homifyapi.onrender.com' }
+  Rails.application.routes.default_url_options[:host] = 'https://homifyapi.onrender.com'
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers

@@ -43,7 +43,7 @@ gem 'sprockets-rails', group: :assets
 gem 'dotenv-rails'
 gem 'cloudinary'
 gem 'activestorage-cloudinary-service'
-gem 'ruby-vips'
+# gem 'ruby-vips'
 
 
 

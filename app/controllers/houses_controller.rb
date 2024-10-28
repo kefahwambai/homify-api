@@ -18,7 +18,7 @@ class HousesController < ApplicationController
     @house = current_home_owner.houses.new(house_params)
 
     if @house.save
-      attach_files
+      # attach_files
       render json: house_with_attached_urls(@house), status: :created, location: @house
     else
       render json: @house.errors, status: :unprocessable_entity
