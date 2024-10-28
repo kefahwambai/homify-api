@@ -5,7 +5,8 @@ class HouseSerializer < ActiveModel::Serializer
              :image_urls, :video_urls, :pdf_urls
 
   # has_one :home_owner
-  set default_url_options[:host]
+
+  
   def image_urls
     if object.image.attached?
       object.image.map { |image| Rails.application.routes.url_helpers.rails_blob_url(image, host: Rails.application.routes.default_url_options[:host]) }
